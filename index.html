@@ -1,0 +1,996 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Size Guide</title>
+
+<!-- iPad / iPhone "Add to Home Screen" behavior -->
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Size">
+<meta name="theme-color" content="#000000">
+<link rel="manifest" href="manifest.json">
+
+<style>
+  /* =====================================================================
+     Size data lives at the bottom of this file.
+     Search for "CATEGORIES =" to find and edit sizes.
+     ===================================================================== */
+
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; -webkit-touch-callout: none; -webkit-user-select: none; user-select: none; }
+  html, body {
+    height: 100%; width: 100%;
+    background: #000; color: #fff;
+    font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+    overflow: hidden; overscroll-behavior: none;
+    touch-action: manipulation;
+  }
+  body {
+    display: flex; flex-direction: column;
+    height: 100vh; height: 100dvh;
+    padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+  }
+
+  /* ===== Top bar ===== */
+  #topbar {
+    display: flex; gap: 5px;
+    padding: 6px 6px 4px 6px;
+    flex: 0 0 auto;
+    align-items: stretch;
+  }
+  #tabs { display: flex; gap: 5px; flex: 1 1 auto; min-width: 0; }
+  .tab {
+    flex: 1; padding: 10px 2px;
+    text-align: center;
+    font-size: clamp(11px, 1.7vw, 20px);
+    font-weight: 900; letter-spacing: 0.05em;
+    border: 2px solid #333; border-radius: 10px;
+    background: #0a0a0a; color: #777;
+    transition: transform 0.05s, background 0.1s, color 0.1s, border-color 0.1s;
+    white-space: nowrap;
+    min-width: 0;
+  }
+  .tab.active { background: #fff; color: #000; border-color: #fff; }
+  .tab:active { transform: scale(0.96); }
+
+  .icon-btn {
+    flex: 0 0 auto; width: 48px;
+    font-size: 22px; font-weight: 900;
+    border: 2px solid #333; border-radius: 10px;
+    background: #0a0a0a; color: #fff;
+  }
+  .icon-btn:active { transform: scale(0.94); }
+
+  .mode-btn {
+    flex: 0 0 auto; padding: 0 14px;
+    font-size: clamp(11px, 1.6vw, 18px);
+    font-weight: 900; letter-spacing: 0.1em;
+    border: 2px solid #333; border-radius: 10px;
+    background: #0a0a0a; color: #aaa;
+    white-space: nowrap;
+  }
+  .mode-btn.on {
+    background: #ff0050; color: #fff; border-color: #ff0050;
+    box-shadow: 0 0 12px rgba(255,0,80,0.6);
+  }
+  .mode-btn:active { transform: scale(0.96); }
+
+  /* ===== Pin row (LAST + favorites) ===== */
+  #pinRow {
+    display: flex; gap: 5px;
+    padding: 0 6px 4px 6px;
+    flex: 0 0 auto;
+    max-height: 62px;
+  }
+  #pinRow.empty { display: none; }
+  .pin {
+    flex: 0 0 auto;
+    min-width: 70px;
+    padding: 6px 10px;
+    background: #141414;
+    border: 2px solid #444; border-radius: 10px;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    transition: transform 0.05s;
+  }
+  .pin:active { transform: scale(0.94); }
+  .pin .pin-tag { font-size: 9px; letter-spacing: 0.2em; color: #888; font-weight: 800; }
+  .pin .pin-main { font-size: 22px; font-weight: 900; line-height: 1; margin-top: 1px; color: #fff; }
+  .pin .pin-sub { font-size: 12px; font-weight: 700; color: #aaa; line-height: 1; margin-top: 2px; }
+  .pin.last { border-color: #fff; }
+  .pin.last .pin-tag { color: #fff; }
+  .pin.fav { border-color: #ffd700; }
+  .pin.fav .pin-tag { color: #ffd700; }
+
+  /* ===== Grid ===== */
+  #gridWrap { flex: 1 1 auto; display: flex; min-height: 0; position: relative; }
+  #grid {
+    flex: 1 1 auto;
+    display: grid; gap: 8px;
+    padding: 0 8px 8px 8px;
+    min-height: 0;
+  }
+
+  .tile {
+    background: #0a0a0a;
+    border: 3px solid #fff; border-radius: 16px;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    padding: 4px;
+    min-height: 0; min-width: 0;
+    transition: transform 0.05s ease-out, background 0.08s;
+    overflow: hidden; position: relative;
+  }
+  .tile:active { transform: scale(0.94); background: #fff; color: #000; }
+  .tile .star {
+    position: absolute; top: 4px; right: 6px;
+    font-size: 18px; line-height: 1;
+    color: #333;
+    padding: 4px;
+  }
+  .tile .star.on { color: #ffd700; text-shadow: 0 0 6px rgba(255,215,0,0.7); }
+  .tile .main {
+    font-weight: 900;
+    font-size: clamp(26px, 6.2vw, 84px);
+    line-height: 1; letter-spacing: -0.02em;
+  }
+  .tile .main-label {
+    font-weight: 800;
+    font-size: clamp(9px, 1.4vw, 16px);
+    letter-spacing: 0.15em; opacity: 0.9; margin-top: 3px;
+  }
+  .tile .sub {
+    font-weight: 900;
+    font-size: clamp(22px, 4.8vw, 60px);
+    line-height: 1; margin-top: 8px; opacity: 0.95;
+  }
+  .tile .sub-label {
+    font-weight: 800;
+    font-size: clamp(9px, 1.3vw, 15px);
+    letter-spacing: 0.15em; opacity: 0.8; margin-top: 2px;
+  }
+
+  /* Category color accents on tiles */
+  body[data-cat="MEN"]      .tile { border-color: #00e0ff; }
+  body[data-cat="MEN"]      .tile .main { color: #00e0ff; }
+  body[data-cat="WOMENS"]   .tile { border-color: #ff6b00; }
+  body[data-cat="WOMENS"]   .tile .main { color: #ff6b00; }
+  body[data-cat="YOUTH"]    .tile { border-color: #39ff14; }
+  body[data-cat="YOUTH"]    .tile .main { color: #39ff14; }
+  body[data-cat="TODDLER"]  .tile { border-color: #ffef00; }
+  body[data-cat="TODDLER"]  .tile .main { color: #ffef00; }
+  body[data-cat="KIDS"]     .tile { border-color: #ff3fd5; }
+  body[data-cat="KIDS"]     .tile .main { color: #ff3fd5; }
+  body[data-cat="CLOTHING"] .tile { border-color: #b967ff; }
+  body[data-cat="CLOTHING"] .tile .main { color: #b967ff; }
+  .tile:active .main, .tile:active .sub { color: #000 !important; }
+
+  /* ===== Fullscreen overlay ===== */
+  #overlay {
+    position: fixed; inset: 0;
+    background: #000;
+    display: none;
+    flex-direction: column; align-items: center; justify-content: center;
+    text-align: center; z-index: 99;
+    padding: 3vw;
+  }
+  #overlay.show { display: flex; }
+
+  #overlay .big {
+    font-weight: 900;
+    font-size: min(46vw, 54vh);
+    line-height: 0.9; letter-spacing: -0.04em;
+  }
+  #overlay .big-label {
+    font-weight: 800;
+    font-size: min(7vw, 8vh);
+    letter-spacing: 0.2em; margin-top: 1vh; opacity: 0.95;
+  }
+  #overlay .big-sub {
+    font-weight: 900;
+    font-size: min(22vw, 26vh);
+    letter-spacing: -0.03em; line-height: 0.9;
+    margin-top: 3vh; opacity: 0.95;
+  }
+  #overlay .big-sub-label {
+    font-weight: 800;
+    font-size: min(5.5vw, 6.5vh);
+    letter-spacing: 0.25em; opacity: 0.85; margin-top: 1vh;
+  }
+  #overlay .intl {
+    margin-top: 3vh;
+    font-size: min(4vw, 5vh);
+    font-weight: 700; opacity: 0.7;
+    letter-spacing: 0.1em;
+  }
+  #overlay .intl.hidden { display: none; }
+  #overlay .hint {
+    position: absolute; bottom: 2vh; left: 0; right: 0;
+    font-size: 2vh; letter-spacing: 0.2em;
+    opacity: 0.3; font-weight: 700;
+  }
+  #overlay .lockInd {
+    position: absolute; top: 2vh; left: 2vh;
+    font-size: 3vh; font-weight: 900;
+    color: #ff0050; letter-spacing: 0.15em;
+    display: none;
+  }
+  #overlay.locked .lockInd { display: block; }
+  #overlay .closeX {
+    position: absolute; top: 1vh; right: 1vh;
+    width: 12vh; height: 12vh;
+    border: 3px solid #fff; border-radius: 50%;
+    background: rgba(255,255,255,0.05);
+    color: #fff;
+    font-size: 7vh; font-weight: 900; line-height: 1;
+    display: flex; align-items: center; justify-content: center;
+    transition: transform 0.05s;
+  }
+  #overlay .closeX:active { transform: scale(0.92); background: #fff; color: #000; }
+
+  #overlay[data-cat="MEN"]      .big { color: #00e0ff; }
+  #overlay[data-cat="WOMENS"]   .big { color: #ff6b00; }
+  #overlay[data-cat="YOUTH"]    .big { color: #39ff14; }
+  #overlay[data-cat="TODDLER"]  .big { color: #ffef00; }
+  #overlay[data-cat="KIDS"]     .big { color: #ff3fd5; }
+  #overlay[data-cat="CLOTHING"] .big { color: #b967ff; }
+
+  /* ===== Settings panel ===== */
+  #settingsPanel {
+    position: fixed; inset: 0; z-index: 200;
+    display: none; pointer-events: none;
+  }
+  #settingsPanel.show { display: block; pointer-events: auto; }
+  #settingsPanel .backdrop {
+    position: absolute; inset: 0;
+    background: rgba(0,0,0,0.7);
+  }
+  #settingsPanel .panel {
+    position: absolute; top: 0; right: 0; bottom: 0;
+    width: min(420px, 90vw);
+    background: #0a0a0a;
+    border-left: 2px solid #333;
+    padding: 24px 20px;
+    display: flex; flex-direction: column; gap: 14px;
+    overflow-y: auto;
+  }
+  #settingsPanel h2 {
+    font-size: 22px; font-weight: 900;
+    letter-spacing: 0.15em; margin-bottom: 8px;
+  }
+  .set-row {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 14px 16px;
+    background: #141414;
+    border: 2px solid #2a2a2a; border-radius: 10px;
+  }
+  .set-row .lbl { font-weight: 800; letter-spacing: 0.1em; font-size: 15px; }
+  .set-row .sub { font-size: 11px; color: #888; letter-spacing: 0.05em; margin-top: 2px; font-weight: 600; }
+  .set-row .left { display: flex; flex-direction: column; }
+  .switch {
+    width: 56px; height: 32px; border-radius: 16px;
+    background: #333; border: none; position: relative;
+    flex-shrink: 0; transition: background 0.15s;
+  }
+  .switch::after {
+    content: ""; position: absolute; top: 3px; left: 3px;
+    width: 26px; height: 26px; border-radius: 50%;
+    background: #888; transition: transform 0.15s, background 0.15s;
+  }
+  .switch.on { background: #00d060; }
+  .switch.on::after { transform: translateX(24px); background: #fff; }
+
+  .big-btn {
+    padding: 14px;
+    background: #1a1a1a; color: #fff;
+    border: 2px solid #333; border-radius: 10px;
+    font-weight: 800; letter-spacing: 0.1em;
+    font-size: 14px;
+  }
+  .big-btn.danger { color: #ff5050; border-color: #551515; }
+  .big-btn:active { transform: scale(0.97); }
+
+  .help {
+    font-size: 12px; color: #666; line-height: 1.5;
+    padding: 10px 4px; letter-spacing: 0.03em;
+  }
+
+  /* ===== Rotate warning ===== */
+  #rotateWarning {
+    position: fixed; inset: 0; z-index: 300;
+    background: rgba(0,0,0,0.95);
+    display: none;
+    flex-direction: column; align-items: center; justify-content: center;
+    text-align: center; padding: 20px;
+  }
+  @media (orientation: portrait) {
+    #rotateWarning.armed { display: flex; }
+  }
+  #rotateWarning .icon {
+    font-size: 80px; margin-bottom: 20px;
+    animation: rotate-hint 1.6s ease-in-out infinite;
+  }
+  #rotateWarning .msg {
+    font-size: 28px; font-weight: 900;
+    letter-spacing: 0.15em;
+  }
+  #rotateWarning .sub {
+    font-size: 14px; color: #888;
+    letter-spacing: 0.15em; margin-top: 12px;
+    font-weight: 700;
+  }
+  @keyframes rotate-hint {
+    0%, 100% { transform: rotate(0deg); }
+    50% { transform: rotate(90deg); }
+  }
+</style>
+</head>
+<body data-cat="MEN">
+
+<div id="topbar">
+  <button class="icon-btn" id="settingsBtn" aria-label="Settings">⚙</button>
+  <div id="tabs"></div>
+  <button class="mode-btn" id="adidasBtn">STANDARD</button>
+</div>
+
+<div id="pinRow" class="empty"></div>
+
+<div id="gridWrap">
+  <div id="grid"></div>
+</div>
+
+<div id="overlay">
+  <div class="lockInd">🔒 LOCKED — TAP X</div>
+  <button class="closeX" id="closeBtn" aria-label="Close">✕</button>
+  <div class="big" id="ovMain"></div>
+  <div class="big-label" id="ovMainLabel"></div>
+  <div class="big-sub" id="ovSub"></div>
+  <div class="big-sub-label" id="ovSubLabel"></div>
+  <div class="intl hidden" id="ovIntl"></div>
+  <div class="hint" id="ovHint">TAP ANYWHERE TO CLOSE</div>
+</div>
+
+<div id="settingsPanel">
+  <div class="backdrop" id="settingsBackdrop"></div>
+  <div class="panel">
+    <h2>SETTINGS</h2>
+
+    <div class="set-row">
+      <div class="left">
+        <span class="lbl">ADIDAS MODE</span>
+        <span class="sub">+1 conversion instead of +1.5</span>
+      </div>
+      <button class="switch" id="sw-adidas"></button>
+    </div>
+
+    <div class="set-row">
+      <div class="left">
+        <span class="lbl">STAY AWAKE</span>
+        <span class="sub">keep iPad screen on</span>
+      </div>
+      <button class="switch" id="sw-wake"></button>
+    </div>
+
+    <div class="set-row">
+      <div class="left">
+        <span class="lbl">CLICK SOUND</span>
+        <span class="sub">audio feedback on tap</span>
+      </div>
+      <button class="switch" id="sw-sound"></button>
+    </div>
+
+    <div class="set-row">
+      <div class="left">
+        <span class="lbl">SHOW EU / UK</span>
+        <span class="sub">display international sizes in fullscreen</span>
+      </div>
+      <button class="switch" id="sw-euuk"></button>
+    </div>
+
+    <div class="set-row">
+      <div class="left">
+        <span class="lbl">ROTATE WARNING</span>
+        <span class="sub">nag if iPad is in portrait</span>
+      </div>
+      <button class="switch" id="sw-rotate"></button>
+    </div>
+
+    <button class="big-btn danger" id="clearFavsBtn">CLEAR FAVORITES</button>
+    <button class="big-btn" id="closeSettingsBtn">DONE</button>
+
+    <div class="help">
+      HOW TO USE:<br>
+      • TAP tile → fullscreen size<br>
+      • TAP star on tile → add to favorites row<br>
+      • HOLD tile → fullscreen in LOCKED mode<br>
+      • SWIPE left/right on grid → switch tabs<br>
+      • In fullscreen, tap anywhere to close (or tap X if locked)
+    </div>
+  </div>
+</div>
+
+<div id="rotateWarning">
+  <div class="icon">📱</div>
+  <div class="msg">ROTATE TO LANDSCAPE</div>
+  <div class="sub">for the best view</div>
+</div>
+
+<script>
+/* =========================================================
+   EDIT YOUR SIZES HERE
+   For each tile:
+     main       : the big number (required)
+     mainLabel  : label under the main number (optional)
+     convertTo  : "WOMEN" or "YOUTH" — auto-computes conversion based on mode
+                  leave blank/omit for no conversion
+     sub / subLabel : manual override (use instead of convertTo)
+   ========================================================= */
+const CATEGORIES = [
+  {
+    name: "MEN",
+    sizes: [
+      { main: "7.5",  mainLabel: "MEN", convertTo: "WOMEN" },
+      { main: "8",    mainLabel: "MEN", convertTo: "WOMEN" },
+      { main: "8.5",  mainLabel: "MEN", convertTo: "WOMEN" },
+      { main: "9",    mainLabel: "MEN", convertTo: "WOMEN" },
+      { main: "9.5",  mainLabel: "MEN", convertTo: "WOMEN" },
+      { main: "10",   mainLabel: "MEN", convertTo: "WOMEN" },
+      { main: "10.5", mainLabel: "MEN", convertTo: "WOMEN" },
+      { main: "11",   mainLabel: "MEN", convertTo: "WOMEN" },
+      { main: "11.5", mainLabel: "MEN", convertTo: "WOMEN" },
+      { main: "12",   mainLabel: "MEN" },
+      { main: "12.5", mainLabel: "MEN" },
+      { main: "13",   mainLabel: "MEN" },
+      { main: "14",   mainLabel: "MEN" },
+      { main: "15",   mainLabel: "MEN" }
+    ]
+  },
+  {
+    // WOMENS — shows women's size with youth conversion below
+    name: "WOMENS",
+    sizes: [
+      { main: "5",   mainLabel: "WOMEN", convertTo: "YOUTH" },
+      { main: "5.5", mainLabel: "WOMEN", convertTo: "YOUTH" },
+      { main: "6",   mainLabel: "WOMEN", convertTo: "YOUTH" },
+      { main: "6.5", mainLabel: "WOMEN", convertTo: "YOUTH" },
+      { main: "7",   mainLabel: "WOMEN", convertTo: "YOUTH" },
+      { main: "7.5", mainLabel: "WOMEN", convertTo: "YOUTH" },
+      { main: "8",   mainLabel: "WOMEN", convertTo: "YOUTH" },
+      { main: "8.5", mainLabel: "WOMEN", convertTo: "YOUTH" },
+      { main: "9",   mainLabel: "WOMEN", convertTo: "YOUTH" }
+    ]
+  },
+  {
+    name: "YOUTH",
+    sizes: [
+      { main: "3.5", mainLabel: "YOUTH", convertTo: "WOMEN" },
+      { main: "4",   mainLabel: "YOUTH", convertTo: "WOMEN" },
+      { main: "4.5", mainLabel: "YOUTH", convertTo: "WOMEN" },
+      { main: "5",   mainLabel: "YOUTH", convertTo: "WOMEN" },
+      { main: "5.5", mainLabel: "YOUTH", convertTo: "WOMEN" },
+      { main: "6",   mainLabel: "YOUTH", convertTo: "WOMEN" },
+      { main: "6.5", mainLabel: "YOUTH", convertTo: "WOMEN" },
+      { main: "7",   mainLabel: "YOUTH", convertTo: "WOMEN" }
+    ]
+  },
+  {
+    name: "TODDLER",
+    sizes: [
+      { main: "1",  mainLabel: "TODDLER" },
+      { main: "2",  mainLabel: "TODDLER" },
+      { main: "3",  mainLabel: "TODDLER" },
+      { main: "4",  mainLabel: "TODDLER" },
+      { main: "5",  mainLabel: "TODDLER" },
+      { main: "6",  mainLabel: "TODDLER" },
+      { main: "7",  mainLabel: "TODDLER" },
+      { main: "8",  mainLabel: "TODDLER" },
+      { main: "9",  mainLabel: "TODDLER" },
+      { main: "10", mainLabel: "TODDLER" }
+    ]
+  },
+  {
+    name: "KIDS",
+    sizes: [
+      { main: "10.5", mainLabel: "KIDS" },
+      { main: "11",   mainLabel: "KIDS" },
+      { main: "11.5", mainLabel: "KIDS" },
+      { main: "12",   mainLabel: "KIDS" },
+      { main: "12.5", mainLabel: "KIDS" },
+      { main: "13",   mainLabel: "KIDS" },
+      { main: "13.5", mainLabel: "KIDS" },
+      { main: "1",    mainLabel: "KIDS" },
+      { main: "1.5",  mainLabel: "KIDS" },
+      { main: "2",    mainLabel: "KIDS" },
+      { main: "2.5",  mainLabel: "KIDS" },
+      { main: "3",    mainLabel: "KIDS" }
+    ]
+  },
+  {
+    name: "CLOTHING",
+    sizes: [
+      { main: "XXS" },
+      { main: "XS"  },
+      { main: "S"   },
+      { main: "M"   },
+      { main: "L"   },
+      { main: "XL"  },
+      { main: "XXL" }
+    ]
+  }
+];
+
+/* =========================================================
+   APP LOGIC
+   ========================================================= */
+const STORE_KEY = 'sneakerSizeApp.v2';
+const defaultSettings = {
+  mode: 'standard',     // 'standard' | 'adidas'
+  wake: false,
+  sound: false,
+  euuk: false,
+  rotateWarn: true,
+  favorites: []         // [{cat, main}]
+};
+let settings = Object.assign({}, defaultSettings, loadSettings());
+
+function loadSettings() {
+  try { return JSON.parse(localStorage.getItem(STORE_KEY) || '{}'); }
+  catch(e) { return {}; }
+}
+function saveSettings() {
+  try { localStorage.setItem(STORE_KEY, JSON.stringify(settings)); } catch(e) {}
+}
+
+/* ---------- Conversion math ---------- */
+function formatNum(n) {
+  if (n == null || isNaN(n)) return '';
+  const rounded = Math.round(n * 10) / 10;
+  return (rounded % 1 === 0) ? String(Math.round(rounded)) : rounded.toFixed(1);
+}
+function getConversionDelta() { return settings.mode === 'adidas' ? 1 : 1.5; }
+function computeSub(size) {
+  // Returns { sub, subLabel } for a size that has convertTo
+  if (!size.convertTo) {
+    return { sub: size.sub || '', subLabel: size.subLabel || '' };
+  }
+  const n = parseFloat(size.main);
+  if (isNaN(n)) return { sub: '', subLabel: '' };
+  const d = getConversionDelta();
+  let converted;
+  const from = size.mainLabel;
+  const to = size.convertTo;
+
+  // MEN/YOUTH → WOMEN is +delta
+  // WOMEN → YOUTH is -delta
+  // WOMEN → MEN is -delta
+  if ((from === 'MEN' || from === 'YOUTH') && to === 'WOMEN') converted = n + d;
+  else if (from === 'WOMEN' && to === 'YOUTH')                 converted = n - d;
+  else if (from === 'WOMEN' && to === 'MEN')                   converted = n - d;
+  else if (to === 'MEN' && from === 'YOUTH')                   converted = n + 0; // 7 youth ≈ 7 men
+  else converted = n;
+  return { sub: formatNum(converted), subLabel: to };
+}
+
+/* ---------- Intl (EU/UK) conversion approximations ---------- */
+function computeIntl(size) {
+  // Based on the mainLabel — approximate US→EU and US→UK
+  const n = parseFloat(size.main);
+  if (isNaN(n)) return '';
+  const m = size.mainLabel;
+  let eu, uk;
+  if (m === 'MEN')          { eu = n + 33;   uk = n - 0.5; }
+  else if (m === 'WOMEN')   { eu = n + 31;   uk = n - 2;   }
+  else if (m === 'YOUTH')   { eu = n + 31.5; uk = n - 1;   }
+  else if (m === 'KIDS')    { eu = n + 31.5; uk = n - 1;   }
+  else if (m === 'TODDLER') { eu = n + 15;   uk = n;        }
+  else return '';
+  return `EU ${formatNum(eu)}  ·  UK ${formatNum(uk)}`;
+}
+
+/* ---------- DOM refs ---------- */
+const tabsEl = document.getElementById('tabs');
+const gridEl = document.getElementById('grid');
+const pinRowEl = document.getElementById('pinRow');
+const overlay = document.getElementById('overlay');
+const ovMain = document.getElementById('ovMain');
+const ovMainLabel = document.getElementById('ovMainLabel');
+const ovSub = document.getElementById('ovSub');
+const ovSubLabel = document.getElementById('ovSubLabel');
+const ovIntl = document.getElementById('ovIntl');
+const ovHint = document.getElementById('ovHint');
+const closeBtn = document.getElementById('closeBtn');
+const adidasBtn = document.getElementById('adidasBtn');
+const settingsBtn = document.getElementById('settingsBtn');
+const settingsPanel = document.getElementById('settingsPanel');
+const settingsBackdrop = document.getElementById('settingsBackdrop');
+const closeSettingsBtn = document.getElementById('closeSettingsBtn');
+const clearFavsBtn = document.getElementById('clearFavsBtn');
+const rotateWarning = document.getElementById('rotateWarning');
+
+let currentCat = CATEGORIES[0];
+let lastSize = null;
+let overlayLocked = false;
+let currentOverlaySize = null;
+
+/* ---------- Click sound (WebAudio, synthesized) ---------- */
+let audioCtx = null;
+function ensureAudio() {
+  if (!audioCtx) {
+    try { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
+    catch(e) { audioCtx = null; }
+  }
+  if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
+}
+function playClick() {
+  if (!settings.sound || !audioCtx) return;
+  try {
+    const t0 = audioCtx.currentTime;
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.type = 'square';
+    osc.frequency.setValueAtTime(1400, t0);
+    osc.frequency.exponentialRampToValueAtTime(600, t0 + 0.04);
+    gain.gain.setValueAtTime(0.25, t0);
+    gain.gain.exponentialRampToValueAtTime(0.001, t0 + 0.06);
+    osc.connect(gain); gain.connect(audioCtx.destination);
+    osc.start(t0); osc.stop(t0 + 0.07);
+  } catch(e) {}
+}
+function vibrate(ms) { if (navigator.vibrate) { try { navigator.vibrate(ms); } catch(e){} } }
+function feedback(ms) { vibrate(ms); playClick(); }
+
+/* ---------- Wake lock ---------- */
+let wakeLock = null;
+async function applyWakeLock() {
+  if (settings.wake) {
+    if (!('wakeLock' in navigator)) return;
+    try { wakeLock = await navigator.wakeLock.request('screen'); }
+    catch(e) {}
+  } else {
+    if (wakeLock) { try { await wakeLock.release(); } catch(e){} wakeLock = null; }
+  }
+}
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'visible' && settings.wake) applyWakeLock();
+});
+
+/* ---------- Tabs ---------- */
+function buildTabs() {
+  tabsEl.innerHTML = '';
+  CATEGORIES.forEach(cat => {
+    const b = document.createElement('div');
+    b.className = 'tab' + (cat === currentCat ? ' active' : '');
+    b.textContent = cat.name;
+    b.addEventListener('click', () => selectCat(cat));
+    tabsEl.appendChild(b);
+  });
+}
+function selectCat(cat) {
+  if (cat === currentCat) return;
+  currentCat = cat;
+  document.body.setAttribute('data-cat', cat.name);
+  buildTabs();
+  buildGrid();
+  feedback(8);
+}
+function nextCat(dir) {
+  const i = CATEGORIES.indexOf(currentCat);
+  const j = (i + dir + CATEGORIES.length) % CATEGORIES.length;
+  selectCat(CATEGORIES[j]);
+}
+
+/* ---------- Grid layout ---------- */
+function bestGridShape(count, aspect) {
+  let best = { cols: 1, rows: count, score: -Infinity };
+  for (let cols = 1; cols <= count; cols++) {
+    const rows = Math.ceil(count / cols);
+    const tileW = 1 / cols;
+    const tileH = (1 / aspect) / rows;
+    const tileAspect = tileW / tileH;
+    const empties = cols * rows - count;
+    const score = -Math.abs(Math.log(tileAspect)) - empties * 0.05;
+    if (score > best.score) best = { cols, rows, score };
+  }
+  return best;
+}
+
+function buildGrid() {
+  gridEl.innerHTML = '';
+  const sizes = currentCat.sizes;
+  const rect = gridEl.getBoundingClientRect();
+  const aspect = rect.width / Math.max(rect.height, 1);
+  const { cols, rows } = bestGridShape(sizes.length, aspect);
+  gridEl.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
+  gridEl.style.gridTemplateRows = `repeat(${rows}, 1fr)`;
+
+  sizes.forEach((size, idx) => {
+    const tile = createTile(size, currentCat.name);
+    gridEl.appendChild(tile);
+  });
+}
+
+function createTile(size, catName) {
+  const t = document.createElement('div');
+  t.className = 'tile';
+
+  // Star (favorite toggle)
+  const star = document.createElement('div');
+  star.className = 'star' + (isFavorite(catName, size.main) ? ' on' : '');
+  star.textContent = '★';
+  star.addEventListener('click', (e) => {
+    e.stopPropagation();
+    toggleFavorite(catName, size.main);
+    star.classList.toggle('on');
+    feedback(8);
+  });
+  t.appendChild(star);
+
+  const main = document.createElement('div');
+  main.className = 'main';
+  main.textContent = size.main;
+  t.appendChild(main);
+
+  if (size.mainLabel) {
+    const ml = document.createElement('div');
+    ml.className = 'main-label';
+    ml.textContent = size.mainLabel;
+    t.appendChild(ml);
+  }
+
+  const { sub, subLabel } = computeSub(size);
+  if (sub) {
+    const subEl = document.createElement('div');
+    subEl.className = 'sub';
+    subEl.textContent = sub;
+    t.appendChild(subEl);
+    if (subLabel) {
+      const sl = document.createElement('div');
+      sl.className = 'sub-label';
+      sl.textContent = subLabel;
+      t.appendChild(sl);
+    }
+  }
+
+  attachTapAndHold(t, {
+    onTap: () => openOverlay(size, catName, false),
+    onHold: () => openOverlay(size, catName, true)
+  });
+  return t;
+}
+
+/* ---------- Tap vs long-press detection ---------- */
+function attachTapAndHold(el, { onTap, onHold }) {
+  let holdTimer = null;
+  let heldFired = false;
+  let startX = 0, startY = 0, moved = false;
+  const HOLD_MS = 550;
+  const MOVE_CANCEL = 12;
+
+  el.addEventListener('pointerdown', (e) => {
+    if (e.target.classList.contains('star')) return;
+    heldFired = false; moved = false;
+    startX = e.clientX; startY = e.clientY;
+    holdTimer = setTimeout(() => {
+      heldFired = true;
+      onHold && onHold();
+    }, HOLD_MS);
+  });
+  el.addEventListener('pointermove', (e) => {
+    if (!holdTimer) return;
+    if (Math.abs(e.clientX - startX) > MOVE_CANCEL || Math.abs(e.clientY - startY) > MOVE_CANCEL) {
+      moved = true;
+      clearTimeout(holdTimer); holdTimer = null;
+    }
+  });
+  el.addEventListener('pointerup', (e) => {
+    if (holdTimer) { clearTimeout(holdTimer); holdTimer = null; }
+    if (e.target.classList.contains('star')) return;
+    if (heldFired || moved) return;
+    onTap && onTap();
+  });
+  el.addEventListener('pointercancel', () => {
+    if (holdTimer) { clearTimeout(holdTimer); holdTimer = null; }
+  });
+}
+
+/* ---------- Overlay ---------- */
+function openOverlay(size, catName, locked) {
+  currentOverlaySize = { size, catName };
+  const { sub, subLabel } = computeSub(size);
+  ovMain.textContent = size.main;
+  ovMainLabel.textContent = size.mainLabel || '';
+  ovSub.textContent = sub || '';
+  ovSubLabel.textContent = subLabel || '';
+
+  const intl = settings.euuk ? computeIntl(size) : '';
+  if (intl) { ovIntl.textContent = intl; ovIntl.classList.remove('hidden'); }
+  else ovIntl.classList.add('hidden');
+
+  overlay.setAttribute('data-cat', catName);
+  overlayLocked = !!locked;
+  overlay.classList.toggle('locked', overlayLocked);
+  ovHint.textContent = overlayLocked ? 'LOCKED — TAP X TO CLOSE' : 'TAP ANYWHERE TO CLOSE';
+
+  overlay.classList.add('show');
+  setLast(size, catName);
+  feedback(locked ? 30 : 15);
+}
+function closeOverlay() {
+  overlay.classList.remove('show');
+  overlay.classList.remove('locked');
+  overlayLocked = false;
+  currentOverlaySize = null;
+  feedback(5);
+}
+overlay.addEventListener('click', (e) => {
+  if (e.target === closeBtn || closeBtn.contains(e.target)) { closeOverlay(); return; }
+  if (overlayLocked) return;
+  closeOverlay();
+});
+closeBtn.addEventListener('click', (e) => { e.stopPropagation(); closeOverlay(); });
+
+/* ---------- Last-size + Favorites pin row ---------- */
+function setLast(size, catName) {
+  lastSize = { size, catName };
+  renderPinRow();
+}
+function isFavorite(catName, main) {
+  return settings.favorites.some(f => f.cat === catName && f.main === main);
+}
+function toggleFavorite(catName, main) {
+  const i = settings.favorites.findIndex(f => f.cat === catName && f.main === main);
+  if (i >= 0) settings.favorites.splice(i, 1);
+  else settings.favorites.push({ cat: catName, main });
+  saveSettings();
+  renderPinRow();
+}
+function findSize(catName, main) {
+  const cat = CATEGORIES.find(c => c.name === catName);
+  if (!cat) return null;
+  return cat.sizes.find(s => s.main === main) || null;
+}
+function renderPinRow() {
+  pinRowEl.innerHTML = '';
+  let any = false;
+
+  if (lastSize) {
+    pinRowEl.appendChild(makePin(lastSize.size, lastSize.catName, 'LAST', 'last'));
+    any = true;
+  }
+  settings.favorites.forEach(f => {
+    const s = findSize(f.cat, f.main);
+    if (!s) return;
+    pinRowEl.appendChild(makePin(s, f.cat, f.cat, 'fav'));
+    any = true;
+  });
+  pinRowEl.classList.toggle('empty', !any);
+}
+function makePin(size, catName, tag, kind) {
+  const d = document.createElement('div');
+  d.className = 'pin ' + kind;
+  const { sub, subLabel } = computeSub(size);
+  d.innerHTML = `
+    <div class="pin-tag">${tag}</div>
+    <div class="pin-main">${size.main}${size.mainLabel ? ' ' + size.mainLabel : ''}</div>
+    ${sub ? `<div class="pin-sub">${sub} ${subLabel || ''}</div>` : ''}
+  `;
+  d.addEventListener('click', () => openOverlay(size, catName, false));
+  return d;
+}
+
+/* ---------- Adidas toggle ---------- */
+function renderAdidas() {
+  const on = settings.mode === 'adidas';
+  adidasBtn.textContent = on ? 'ADIDAS' : 'STANDARD';
+  adidasBtn.classList.toggle('on', on);
+}
+adidasBtn.addEventListener('click', () => {
+  settings.mode = settings.mode === 'adidas' ? 'standard' : 'adidas';
+  saveSettings();
+  renderAdidas();
+  buildGrid();
+  renderPinRow();
+  syncSwitches();
+  // If overlay open, refresh its content
+  if (overlay.classList.contains('show') && currentOverlaySize) {
+    openOverlay(currentOverlaySize.size, currentOverlaySize.catName, overlayLocked);
+  }
+  feedback(20);
+});
+
+/* ---------- Settings panel ---------- */
+function openSettings() { settingsPanel.classList.add('show'); syncSwitches(); feedback(8); }
+function closeSettings() { settingsPanel.classList.remove('show'); feedback(5); }
+settingsBtn.addEventListener('click', openSettings);
+settingsBackdrop.addEventListener('click', closeSettings);
+closeSettingsBtn.addEventListener('click', closeSettings);
+
+const switches = {
+  'sw-adidas':  { get: () => settings.mode === 'adidas', set: v => settings.mode = v ? 'adidas' : 'standard', after: () => { renderAdidas(); buildGrid(); renderPinRow(); } },
+  'sw-wake':    { get: () => settings.wake,  set: v => settings.wake = v,  after: applyWakeLock },
+  'sw-sound':   { get: () => settings.sound, set: v => settings.sound = v, after: () => { if (settings.sound) { ensureAudio(); playClick(); } } },
+  'sw-euuk':    { get: () => settings.euuk,  set: v => settings.euuk = v,  after: () => {} },
+  'sw-rotate':  { get: () => settings.rotateWarn, set: v => settings.rotateWarn = v, after: applyRotateWarn }
+};
+function syncSwitches() {
+  Object.entries(switches).forEach(([id, s]) => {
+    const el = document.getElementById(id);
+    el.classList.toggle('on', !!s.get());
+  });
+}
+Object.entries(switches).forEach(([id, s]) => {
+  const el = document.getElementById(id);
+  el.addEventListener('click', () => {
+    s.set(!s.get());
+    saveSettings();
+    syncSwitches();
+    s.after();
+    feedback(8);
+  });
+});
+clearFavsBtn.addEventListener('click', () => {
+  settings.favorites = [];
+  saveSettings();
+  renderPinRow();
+  buildGrid(); // refresh star states
+  feedback(15);
+});
+
+/* ---------- Rotate warning ---------- */
+function applyRotateWarn() {
+  rotateWarning.classList.toggle('armed', !!settings.rotateWarn);
+}
+
+/* ---------- Swipe between tabs ---------- */
+(function installSwipe() {
+  let sx = 0, sy = 0, active = false;
+  const TH = 60;
+  gridEl.addEventListener('touchstart', (e) => {
+    if (e.touches.length !== 1) return;
+    active = true; sx = e.touches[0].clientX; sy = e.touches[0].clientY;
+  }, { passive: true });
+  gridEl.addEventListener('touchend', (e) => {
+    if (!active) return;
+    active = false;
+    const t = e.changedTouches[0];
+    const dx = t.clientX - sx, dy = t.clientY - sy;
+    if (Math.abs(dx) > TH && Math.abs(dx) > Math.abs(dy) * 1.5) {
+      nextCat(dx < 0 ? 1 : -1);
+    }
+  });
+})();
+
+/* ---------- Prevent iOS double-tap zoom / context menus ---------- */
+document.addEventListener('gesturestart', e => e.preventDefault());
+document.addEventListener('contextmenu', e => e.preventDefault());
+
+/* ---------- Rebuild on rotate / resize ---------- */
+let resizeT;
+window.addEventListener('resize', () => {
+  clearTimeout(resizeT);
+  resizeT = setTimeout(buildGrid, 50);
+});
+window.addEventListener('orientationchange', () => setTimeout(buildGrid, 200));
+
+/* ---------- Unlock audio on first interaction ---------- */
+document.addEventListener('pointerdown', () => { if (settings.sound) ensureAudio(); }, { once: false });
+
+/* ---------- Service worker ---------- */
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('sw.js').catch(() => {});
+  });
+}
+
+/* ---------- Init ---------- */
+document.body.setAttribute('data-cat', currentCat.name);
+buildTabs();
+renderAdidas();
+applyRotateWarn();
+if (settings.wake) applyWakeLock();
+requestAnimationFrame(() => { buildGrid(); renderPinRow(); });
+</script>
+</body>
+</html>

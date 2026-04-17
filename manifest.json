@@ -1,0 +1,11 @@
+{
+  "name": "Sneaker Size Guide",
+  "short_name": "Sizes",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "landscape",
+  "background_color": "#000000",
+  "theme_color": "#000000",
+  "description": "Visual sneaker size reference for livestream auctions."
+}
