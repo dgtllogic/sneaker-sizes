@@ -178,26 +178,31 @@
   }
   #overlay.show { display: flex; }
 
-  #overlay .big {
+  #overlay .ov-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6vw;
+    width: 100%;
+  }
+  #overlay .ov-group {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  #overlay .ov-group.hidden { display: none; }
+  #overlay .ov-big {
     font-weight: 900;
-    font-size: min(46vw, 54vh);
-    line-height: 0.9; letter-spacing: -0.04em;
+    font-size: min(30vw, 52vh);
+    line-height: 0.9;
+    letter-spacing: -0.04em;
   }
-  #overlay .big-label {
+  #overlay .ov-label {
     font-weight: 800;
-    font-size: min(7vw, 8vh);
-    letter-spacing: 0.2em; margin-top: 1vh; opacity: 0.95;
-  }
-  #overlay .big-sub {
-    font-weight: 900;
-    font-size: min(22vw, 26vh);
-    letter-spacing: -0.03em; line-height: 0.9;
-    margin-top: 3vh; opacity: 0.95;
-  }
-  #overlay .big-sub-label {
-    font-weight: 800;
-    font-size: min(5.5vw, 6.5vh);
-    letter-spacing: 0.25em; opacity: 0.85; margin-top: 1vh;
+    font-size: min(5vw, 6vh);
+    letter-spacing: 0.2em;
+    margin-top: 1.5vh;
+    opacity: 0.95;
   }
   #overlay .intl {
     margin-top: 3vh;
@@ -206,36 +211,13 @@
     letter-spacing: 0.1em;
   }
   #overlay .intl.hidden { display: none; }
-  #overlay .hint {
-    position: absolute; bottom: 2vh; left: 0; right: 0;
-    font-size: 2vh; letter-spacing: 0.2em;
-    opacity: 0.3; font-weight: 700;
-  }
-  #overlay .lockInd {
-    position: absolute; top: 2vh; left: 2vh;
-    font-size: 3vh; font-weight: 900;
-    color: #ff0050; letter-spacing: 0.15em;
-    display: none;
-  }
-  #overlay.locked .lockInd { display: block; }
-  #overlay .closeX {
-    position: absolute; top: 1vh; right: 1vh;
-    width: 12vh; height: 12vh;
-    border: 3px solid #fff; border-radius: 50%;
-    background: rgba(255,255,255,0.05);
-    color: #fff;
-    font-size: 7vh; font-weight: 900; line-height: 1;
-    display: flex; align-items: center; justify-content: center;
-    transition: transform 0.05s;
-  }
-  #overlay .closeX:active { transform: scale(0.92); background: #fff; color: #000; }
 
-  #overlay[data-cat="MEN"]      .big { color: #00e0ff; }
-  #overlay[data-cat="WOMENS"]   .big { color: #ff6b00; }
-  #overlay[data-cat="YOUTH"]    .big { color: #39ff14; }
-  #overlay[data-cat="TODDLER"]  .big { color: #ffef00; }
-  #overlay[data-cat="KIDS"]     .big { color: #ff3fd5; }
-  #overlay[data-cat="CLOTHING"] .big { color: #b967ff; }
+  #overlay[data-cat="MEN"]      .ov-big { color: #00e0ff; }
+  #overlay[data-cat="WOMENS"]   .ov-big { color: #ff6b00; }
+  #overlay[data-cat="YOUTH"]    .ov-big { color: #39ff14; }
+  #overlay[data-cat="TODDLER"]  .ov-big { color: #ffef00; }
+  #overlay[data-cat="KIDS"]     .ov-big { color: #ff3fd5; }
+  #overlay[data-cat="CLOTHING"] .ov-big { color: #b967ff; }
 
   /* ===== Settings panel ===== */
   #settingsPanel {
@@ -342,14 +324,17 @@
 </div>
 
 <div id="overlay">
-  <div class="lockInd">🔒 LOCKED — TAP X</div>
-  <button class="closeX" id="closeBtn" aria-label="Close">✕</button>
-  <div class="big" id="ovMain"></div>
-  <div class="big-label" id="ovMainLabel"></div>
-  <div class="big-sub" id="ovSub"></div>
-  <div class="big-sub-label" id="ovSubLabel"></div>
+  <div class="ov-row">
+    <div class="ov-group">
+      <div class="ov-big" id="ovMain"></div>
+      <div class="ov-label" id="ovMainLabel"></div>
+    </div>
+    <div class="ov-group" id="ovSubGroup">
+      <div class="ov-big ov-sub" id="ovSub"></div>
+      <div class="ov-label" id="ovSubLabel"></div>
+    </div>
+  </div>
   <div class="intl hidden" id="ovIntl"></div>
-  <div class="hint" id="ovHint">TAP ANYWHERE TO CLOSE</div>
 </div>
 
 <div id="settingsPanel">
@@ -404,9 +389,8 @@
       HOW TO USE:<br>
       • TAP tile → fullscreen size<br>
       • TAP star on tile → add to favorites row<br>
-      • HOLD tile → fullscreen in LOCKED mode<br>
       • SWIPE left/right on grid → switch tabs<br>
-      • In fullscreen, tap anywhere to close (or tap X if locked)
+      • In fullscreen, tap anywhere to close
     </div>
   </div>
 </div>
@@ -598,9 +582,8 @@ const ovMain = document.getElementById('ovMain');
 const ovMainLabel = document.getElementById('ovMainLabel');
 const ovSub = document.getElementById('ovSub');
 const ovSubLabel = document.getElementById('ovSubLabel');
+const ovSubGroup = document.getElementById('ovSubGroup');
 const ovIntl = document.getElementById('ovIntl');
-const ovHint = document.getElementById('ovHint');
-const closeBtn = document.getElementById('closeBtn');
 const adidasBtn = document.getElementById('adidasBtn');
 const settingsBtn = document.getElementById('settingsBtn');
 const settingsPanel = document.getElementById('settingsPanel');
@@ -610,8 +593,6 @@ const clearFavsBtn = document.getElementById('clearFavsBtn');
 const rotateWarning = document.getElementById('rotateWarning');
 
 let currentCat = CATEGORIES[0];
-let lastSize = null;
-let overlayLocked = false;
 let currentOverlaySize = null;
 
 /* ---------- Click sound (WebAudio, synthesized) ---------- */
@@ -753,89 +734,43 @@ function createTile(size, catName) {
     }
   }
 
-  attachTapAndHold(t, {
-    onTap: () => openOverlay(size, catName, false),
-    onHold: () => openOverlay(size, catName, true)
+  t.addEventListener('click', (e) => {
+    if (e.target.classList.contains('star')) return;
+    openOverlay(size, catName);
   });
   return t;
 }
 
-/* ---------- Tap vs long-press detection ---------- */
-function attachTapAndHold(el, { onTap, onHold }) {
-  let holdTimer = null;
-  let heldFired = false;
-  let startX = 0, startY = 0, moved = false;
-  const HOLD_MS = 550;
-  const MOVE_CANCEL = 12;
-
-  el.addEventListener('pointerdown', (e) => {
-    if (e.target.classList.contains('star')) return;
-    heldFired = false; moved = false;
-    startX = e.clientX; startY = e.clientY;
-    holdTimer = setTimeout(() => {
-      heldFired = true;
-      onHold && onHold();
-    }, HOLD_MS);
-  });
-  el.addEventListener('pointermove', (e) => {
-    if (!holdTimer) return;
-    if (Math.abs(e.clientX - startX) > MOVE_CANCEL || Math.abs(e.clientY - startY) > MOVE_CANCEL) {
-      moved = true;
-      clearTimeout(holdTimer); holdTimer = null;
-    }
-  });
-  el.addEventListener('pointerup', (e) => {
-    if (holdTimer) { clearTimeout(holdTimer); holdTimer = null; }
-    if (e.target.classList.contains('star')) return;
-    if (heldFired || moved) return;
-    onTap && onTap();
-  });
-  el.addEventListener('pointercancel', () => {
-    if (holdTimer) { clearTimeout(holdTimer); holdTimer = null; }
-  });
-}
-
 /* ---------- Overlay ---------- */
-function openOverlay(size, catName, locked) {
+function openOverlay(size, catName) {
   currentOverlaySize = { size, catName };
   const { sub, subLabel } = computeSub(size);
   ovMain.textContent = size.main;
   ovMainLabel.textContent = size.mainLabel || '';
-  ovSub.textContent = sub || '';
-  ovSubLabel.textContent = subLabel || '';
+  if (sub) {
+    ovSub.textContent = sub;
+    ovSubLabel.textContent = subLabel || '';
+    ovSubGroup.classList.remove('hidden');
+  } else {
+    ovSubGroup.classList.add('hidden');
+  }
 
   const intl = settings.euuk ? computeIntl(size) : '';
   if (intl) { ovIntl.textContent = intl; ovIntl.classList.remove('hidden'); }
   else ovIntl.classList.add('hidden');
 
   overlay.setAttribute('data-cat', catName);
-  overlayLocked = !!locked;
-  overlay.classList.toggle('locked', overlayLocked);
-  ovHint.textContent = overlayLocked ? 'LOCKED — TAP X TO CLOSE' : 'TAP ANYWHERE TO CLOSE';
-
   overlay.classList.add('show');
-  setLast(size, catName);
-  feedback(locked ? 30 : 15);
+  feedback(15);
 }
 function closeOverlay() {
   overlay.classList.remove('show');
-  overlay.classList.remove('locked');
-  overlayLocked = false;
   currentOverlaySize = null;
   feedback(5);
 }
-overlay.addEventListener('click', (e) => {
-  if (e.target === closeBtn || closeBtn.contains(e.target)) { closeOverlay(); return; }
-  if (overlayLocked) return;
-  closeOverlay();
-});
-closeBtn.addEventListener('click', (e) => { e.stopPropagation(); closeOverlay(); });
+overlay.addEventListener('click', closeOverlay);
 
-/* ---------- Last-size + Favorites pin row ---------- */
-function setLast(size, catName) {
-  lastSize = { size, catName };
-  renderPinRow();
-}
+/* ---------- Favorites pin row ---------- */
 function isFavorite(catName, main) {
   return settings.favorites.some(f => f.cat === catName && f.main === main);
 }
@@ -854,11 +789,6 @@ function findSize(catName, main) {
 function renderPinRow() {
   pinRowEl.innerHTML = '';
   let any = false;
-
-  if (lastSize) {
-    pinRowEl.appendChild(makePin(lastSize.size, lastSize.catName, 'LAST', 'last'));
-    any = true;
-  }
   settings.favorites.forEach(f => {
     const s = findSize(f.cat, f.main);
     if (!s) return;

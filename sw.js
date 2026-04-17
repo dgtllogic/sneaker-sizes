@@ -1,6 +1,6 @@
 /* Size Guide service worker — offline cache
    Bump CACHE_VERSION whenever index.html changes to force refresh. */
-const CACHE_VERSION = 'size-guide-v3';
+const CACHE_VERSION = 'size-guide-v4';
 const FILES = [
   './',
   './index.html',
