@@ -178,31 +178,42 @@
   }
   #overlay.show { display: flex; }
 
-  #overlay .ov-row {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 6vw;
-    width: 100%;
-  }
-  #overlay .ov-group {
+  #overlay .ov-main-group {
     display: flex;
     flex-direction: column;
     align-items: center;
   }
-  #overlay .ov-group.hidden { display: none; }
-  #overlay .ov-big {
+  #overlay .ov-main {
     font-weight: 900;
-    font-size: min(30vw, 52vh);
+    font-size: min(44vw, 55vh);
     line-height: 0.9;
     letter-spacing: -0.04em;
   }
-  #overlay .ov-label {
+  #overlay .ov-main-label {
     font-weight: 800;
-    font-size: min(5vw, 6vh);
+    font-size: min(7vw, 8vh);
     letter-spacing: 0.2em;
     margin-top: 1.5vh;
     opacity: 0.95;
+  }
+  #overlay .ov-sub-row {
+    display: flex;
+    align-items: baseline;
+    gap: 3vw;
+    margin-top: 3vh;
+  }
+  #overlay .ov-sub-row.hidden { display: none; }
+  #overlay .ov-sub-num {
+    font-weight: 900;
+    font-size: min(20vw, 24vh);
+    line-height: 1;
+    letter-spacing: -0.03em;
+  }
+  #overlay .ov-sub-label {
+    font-weight: 800;
+    font-size: min(7vw, 8vh);
+    letter-spacing: 0.2em;
+    opacity: 0.9;
   }
   #overlay .intl {
     margin-top: 3vh;
@@ -212,12 +223,18 @@
   }
   #overlay .intl.hidden { display: none; }
 
-  #overlay[data-cat="MEN"]      .ov-big { color: #00e0ff; }
-  #overlay[data-cat="WOMENS"]   .ov-big { color: #ff6b00; }
-  #overlay[data-cat="YOUTH"]    .ov-big { color: #39ff14; }
-  #overlay[data-cat="TODDLER"]  .ov-big { color: #ffef00; }
-  #overlay[data-cat="KIDS"]     .ov-big { color: #ff3fd5; }
-  #overlay[data-cat="CLOTHING"] .ov-big { color: #b967ff; }
+  #overlay[data-cat="MEN"]      .ov-main,
+  #overlay[data-cat="MEN"]      .ov-sub-num { color: #00e0ff; }
+  #overlay[data-cat="WOMENS"]   .ov-main,
+  #overlay[data-cat="WOMENS"]   .ov-sub-num { color: #ff6b00; }
+  #overlay[data-cat="YOUTH"]    .ov-main,
+  #overlay[data-cat="YOUTH"]    .ov-sub-num { color: #39ff14; }
+  #overlay[data-cat="TODDLER"]  .ov-main,
+  #overlay[data-cat="TODDLER"]  .ov-sub-num { color: #ffef00; }
+  #overlay[data-cat="KIDS"]     .ov-main,
+  #overlay[data-cat="KIDS"]     .ov-sub-num { color: #ff3fd5; }
+  #overlay[data-cat="CLOTHING"] .ov-main,
+  #overlay[data-cat="CLOTHING"] .ov-sub-num { color: #b967ff; }
 
   /* ===== Settings panel ===== */
   #settingsPanel {
@@ -324,15 +341,13 @@
 </div>
 
 <div id="overlay">
-  <div class="ov-row">
-    <div class="ov-group">
-      <div class="ov-big" id="ovMain"></div>
-      <div class="ov-label" id="ovMainLabel"></div>
-    </div>
-    <div class="ov-group" id="ovSubGroup">
-      <div class="ov-big ov-sub" id="ovSub"></div>
-      <div class="ov-label" id="ovSubLabel"></div>
-    </div>
+  <div class="ov-main-group">
+    <div class="ov-main" id="ovMain"></div>
+    <div class="ov-main-label" id="ovMainLabel"></div>
+  </div>
+  <div class="ov-sub-row" id="ovSubGroup">
+    <span class="ov-sub-num" id="ovSub"></span>
+    <span class="ov-sub-label" id="ovSubLabel"></span>
   </div>
   <div class="intl hidden" id="ovIntl"></div>
 </div>
@@ -910,7 +925,31 @@ document.addEventListener('pointerdown', () => { if (settings.sound) ensureAudio
 /* ---------- Service worker ---------- */
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('sw.js').catch(() => {});
+    navigator.serviceWorker.register('sw.js').then((reg) => {
+      // Check for updates on every load
+      reg.update();
+      // When a new SW is waiting, tell it to activate, then reload once
+      function handleUpdate() {
+        const w = reg.waiting;
+        if (w) w.postMessage('SKIP_WAITING');
+      }
+      if (reg.waiting) handleUpdate();
+      reg.addEventListener('updatefound', () => {
+        const newSW = reg.installing;
+        if (!newSW) return;
+        newSW.addEventListener('statechange', () => {
+          if (newSW.state === 'installed' && navigator.serviceWorker.controller) {
+            handleUpdate();
+          }
+        });
+      });
+      let reloaded = false;
+      navigator.serviceWorker.addEventListener('controllerchange', () => {
+        if (reloaded) return;
+        reloaded = true;
+        window.location.reload();
+      });
+    }).catch(() => {});
   });
 }
 
