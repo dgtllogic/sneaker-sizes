@@ -191,8 +191,10 @@
     line-height: 0.9;
     letter-spacing: -0.04em;
   }
-  /* No conversion shown → let the single size go huge */
-  #overlay.single .ov-main { font-size: min(40vw, 52vh); }
+  /* No conversion shown → single size goes huge, label underneath */
+  #overlay.single .ov-main-group { flex-direction: column; align-items: center; }
+  #overlay.single .ov-main { font-size: min(42vw, 58vh); }
+  #overlay.single .ov-main-label { font-size: min(7vw, 9vh); margin-top: 1.5vh; }
   #overlay .ov-main-label {
     font-weight: 800;
     font-size: min(6vw, 7vh);
