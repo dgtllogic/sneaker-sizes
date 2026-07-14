@@ -1,7 +1,7 @@
 /* Size Guide service worker
    Strategy: NETWORK-FIRST for HTML (so deployed updates appear immediately
    when online), CACHE-FIRST for other assets (for speed + offline). */
-const CACHE_VERSION = 'size-guide-v6';
+const CACHE_VERSION = 'size-guide-v7';
 const FILES = [
   './',
   './index.html',

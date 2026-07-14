@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<!-- v7: light mode + bigger fullscreen conversion -->
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -180,39 +181,41 @@
 
   #overlay .ov-main-group {
     display: flex;
-    flex-direction: column;
-    align-items: center;
+    flex-direction: row;
+    align-items: baseline;
+    gap: 2.5vw;
   }
   #overlay .ov-main {
     font-weight: 900;
-    font-size: min(44vw, 55vh);
+    font-size: min(30vw, 42vh);
     line-height: 0.9;
     letter-spacing: -0.04em;
   }
+  /* No conversion shown → let the single size go huge */
+  #overlay.single .ov-main { font-size: min(40vw, 52vh); }
   #overlay .ov-main-label {
     font-weight: 800;
-    font-size: min(7vw, 8vh);
-    letter-spacing: 0.2em;
-    margin-top: 1.5vh;
+    font-size: min(6vw, 7vh);
+    letter-spacing: 0.15em;
     opacity: 0.95;
   }
   #overlay .ov-sub-row {
     display: flex;
     align-items: baseline;
-    gap: 3vw;
-    margin-top: 3vh;
+    gap: 2.5vw;
+    margin-top: 2vh;
   }
   #overlay .ov-sub-row.hidden { display: none; }
   #overlay .ov-sub-num {
     font-weight: 900;
-    font-size: min(20vw, 24vh);
+    font-size: min(24vw, 30vh);
     line-height: 1;
     letter-spacing: -0.03em;
   }
   #overlay .ov-sub-label {
     font-weight: 800;
-    font-size: min(7vw, 8vh);
-    letter-spacing: 0.2em;
+    font-size: min(6vw, 7vh);
+    letter-spacing: 0.15em;
     opacity: 0.9;
   }
   #overlay .intl {
@@ -324,6 +327,60 @@
     0%, 100% { transform: rotate(0deg); }
     50% { transform: rotate(90deg); }
   }
+
+  /* =====================================================================
+     LIGHT MODE — bright background overwhelms screen reflections/glare.
+     Category accent colors are darker variants readable on white.
+     ===================================================================== */
+  body.light { background: #f2f2f4; color: #111; }
+
+  body.light .tab { background: #fff; color: #777; border-color: #ccc; }
+  body.light .tab.active { background: #111; color: #fff; border-color: #111; }
+  body.light .icon-btn { background: #fff; color: #111; border-color: #ccc; }
+  body.light .mode-btn { background: #fff; color: #555; border-color: #ccc; }
+  body.light .mode-btn.on { background: #ff0050; color: #fff; border-color: #ff0050; }
+
+  body.light .pin { background: #fff; border-color: #bbb; }
+  body.light .pin .pin-tag { color: #777; }
+  body.light .pin .pin-main { color: #111; }
+  body.light .pin .pin-sub { color: #555; }
+  body.light .pin.last { border-color: #111; }
+  body.light .pin.last .pin-tag { color: #111; }
+  body.light .pin.fav { border-color: #c9a400; }
+  body.light .pin.fav .pin-tag { color: #c9a400; }
+
+  body.light .tile { background: #fff; }
+  body.light .tile .star { color: #ddd; }
+  body.light .tile .star.on { color: #c9a400; text-shadow: none; }
+  body.light .tile:active { background: #111; }
+  body.light .tile:active .main, body.light .tile:active .sub { color: #fff !important; }
+
+  body.light[data-cat="MEN"]      .tile { border-color: #0077cc; }
+  body.light[data-cat="MEN"]      .tile .main { color: #0077cc; }
+  body.light[data-cat="WOMENS"]   .tile { border-color: #d95700; }
+  body.light[data-cat="WOMENS"]   .tile .main { color: #d95700; }
+  body.light[data-cat="YOUTH"]    .tile { border-color: #009930; }
+  body.light[data-cat="YOUTH"]    .tile .main { color: #009930; }
+  body.light[data-cat="TODDLER"]  .tile { border-color: #c7a500; }
+  body.light[data-cat="TODDLER"]  .tile .main { color: #c7a500; }
+  body.light[data-cat="KIDS"]     .tile { border-color: #d1009f; }
+  body.light[data-cat="KIDS"]     .tile .main { color: #d1009f; }
+  body.light[data-cat="CLOTHING"] .tile { border-color: #7a3ff2; }
+  body.light[data-cat="CLOTHING"] .tile .main { color: #7a3ff2; }
+
+  body.light #overlay { background: #f2f2f4; color: #111; }
+  body.light #overlay[data-cat="MEN"]      .ov-main,
+  body.light #overlay[data-cat="MEN"]      .ov-sub-num { color: #0077cc; }
+  body.light #overlay[data-cat="WOMENS"]   .ov-main,
+  body.light #overlay[data-cat="WOMENS"]   .ov-sub-num { color: #d95700; }
+  body.light #overlay[data-cat="YOUTH"]    .ov-main,
+  body.light #overlay[data-cat="YOUTH"]    .ov-sub-num { color: #009930; }
+  body.light #overlay[data-cat="TODDLER"]  .ov-main,
+  body.light #overlay[data-cat="TODDLER"]  .ov-sub-num { color: #c7a500; }
+  body.light #overlay[data-cat="KIDS"]     .ov-main,
+  body.light #overlay[data-cat="KIDS"]     .ov-sub-num { color: #d1009f; }
+  body.light #overlay[data-cat="CLOTHING"] .ov-main,
+  body.light #overlay[data-cat="CLOTHING"] .ov-sub-num { color: #7a3ff2; }
 </style>
 </head>
 <body data-cat="MEN">
@@ -356,6 +413,14 @@
   <div class="backdrop" id="settingsBackdrop"></div>
   <div class="panel">
     <h2>SETTINGS</h2>
+
+    <div class="set-row">
+      <div class="left">
+        <span class="lbl">LIGHT MODE</span>
+        <span class="sub">bright background — cuts screen glare</span>
+      </div>
+      <button class="switch" id="sw-light"></button>
+    </div>
 
     <div class="set-row">
       <div class="left">
@@ -492,18 +557,18 @@ const CATEGORIES = [
   {
     name: "KIDS",
     sizes: [
-      { main: "10.5", mainLabel: "KIDS" },
-      { main: "11",   mainLabel: "KIDS" },
-      { main: "11.5", mainLabel: "KIDS" },
-      { main: "12",   mainLabel: "KIDS" },
-      { main: "12.5", mainLabel: "KIDS" },
-      { main: "13",   mainLabel: "KIDS" },
-      { main: "13.5", mainLabel: "KIDS" },
-      { main: "1",    mainLabel: "KIDS" },
-      { main: "1.5",  mainLabel: "KIDS" },
-      { main: "2",    mainLabel: "KIDS" },
-      { main: "2.5",  mainLabel: "KIDS" },
-      { main: "3",    mainLabel: "KIDS" }
+      { main: "10.5", mainLabel: "TODDLER" },
+      { main: "11",   mainLabel: "TODDLER" },
+      { main: "11.5", mainLabel: "TODDLER" },
+      { main: "12",   mainLabel: "TODDLER" },
+      { main: "12.5", mainLabel: "TODDLER" },
+      { main: "13",   mainLabel: "TODDLER" },
+      { main: "13.5", mainLabel: "TODDLER" },
+      { main: "1",    mainLabel: "YOUTH" },
+      { main: "1.5",  mainLabel: "YOUTH" },
+      { main: "2",    mainLabel: "YOUTH" },
+      { main: "2.5",  mainLabel: "YOUTH" },
+      { main: "3",    mainLabel: "YOUTH" }
     ]
   },
   {
@@ -526,6 +591,7 @@ const CATEGORIES = [
 const STORE_KEY = 'sneakerSizeApp.v2';
 const defaultSettings = {
   mode: 'standard',     // 'standard' | 'adidas'
+  light: false,         // light theme (anti-glare)
   wake: false,
   sound: false,
   euuk: false,
@@ -766,8 +832,10 @@ function openOverlay(size, catName) {
     ovSub.textContent = sub;
     ovSubLabel.textContent = subLabel || '';
     ovSubGroup.classList.remove('hidden');
+    overlay.classList.remove('single');
   } else {
     ovSubGroup.classList.add('hidden');
+    overlay.classList.add('single');
   }
 
   const intl = settings.euuk ? computeIntl(size) : '';
@@ -840,7 +908,7 @@ adidasBtn.addEventListener('click', () => {
   syncSwitches();
   // If overlay open, refresh its content
   if (overlay.classList.contains('show') && currentOverlaySize) {
-    openOverlay(currentOverlaySize.size, currentOverlaySize.catName, overlayLocked);
+    openOverlay(currentOverlaySize.size, currentOverlaySize.catName);
   }
   feedback(20);
 });
@@ -852,7 +920,12 @@ settingsBtn.addEventListener('click', openSettings);
 settingsBackdrop.addEventListener('click', closeSettings);
 closeSettingsBtn.addEventListener('click', closeSettings);
 
+function applyTheme() {
+  document.body.classList.toggle('light', !!settings.light);
+}
+
 const switches = {
+  'sw-light':   { get: () => settings.light, set: v => settings.light = v, after: applyTheme },
   'sw-adidas':  { get: () => settings.mode === 'adidas', set: v => settings.mode = v ? 'adidas' : 'standard', after: () => { renderAdidas(); buildGrid(); renderPinRow(); } },
   'sw-wake':    { get: () => settings.wake,  set: v => settings.wake = v,  after: applyWakeLock },
   'sw-sound':   { get: () => settings.sound, set: v => settings.sound = v, after: () => { if (settings.sound) { ensureAudio(); playClick(); } } },
@@ -955,6 +1028,7 @@ if ('serviceWorker' in navigator) {
 
 /* ---------- Init ---------- */
 document.body.setAttribute('data-cat', currentCat.name);
+applyTheme();
 buildTabs();
 renderAdidas();
 applyRotateWarn();
