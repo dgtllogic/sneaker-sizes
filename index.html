@@ -194,6 +194,8 @@
   /* No conversion shown → single size goes huge, label underneath */
   #overlay.single .ov-main-group { flex-direction: column; align-items: center; }
   #overlay.single .ov-main { font-size: min(42vw, 58vh); }
+  /* Wide letter sizes (XXXL) get scaled down so they don't touch screen edges */
+  #overlay.single.wide4 .ov-main { font-size: min(33vw, 52vh); }
   #overlay.single .ov-main-label { font-size: min(7vw, 9vh); margin-top: 1.5vh; }
   #overlay .ov-main-label {
     font-weight: 800;
@@ -497,6 +499,7 @@ const CATEGORIES = [
   {
     name: "MEN",
     sizes: [
+      { main: "7",    mainLabel: "MEN", convertTo: "WOMEN" },
       { main: "7.5",  mainLabel: "MEN", convertTo: "WOMEN" },
       { main: "8",    mainLabel: "MEN", convertTo: "WOMEN" },
       { main: "8.5",  mainLabel: "MEN", convertTo: "WOMEN" },
@@ -517,6 +520,7 @@ const CATEGORIES = [
     // WOMENS — shows women's size with youth conversion below
     name: "WOMENS",
     sizes: [
+      { main: "4.5", mainLabel: "WOMEN", convertTo: "YOUTH" },
       { main: "5",   mainLabel: "WOMEN", convertTo: "YOUTH" },
       { main: "5.5", mainLabel: "WOMEN", convertTo: "YOUTH" },
       { main: "6",   mainLabel: "WOMEN", convertTo: "YOUTH" },
@@ -525,7 +529,8 @@ const CATEGORIES = [
       { main: "7.5", mainLabel: "WOMEN", convertTo: "YOUTH" },
       { main: "8",   mainLabel: "WOMEN", convertTo: "YOUTH" },
       { main: "8.5", mainLabel: "WOMEN", convertTo: "YOUTH" },
-      { main: "9",   mainLabel: "WOMEN", convertTo: "YOUTH" }
+      { main: "9",   mainLabel: "WOMEN", convertTo: "YOUTH" },
+      { main: "9.5", mainLabel: "WOMEN", convertTo: "YOUTH" }
     ]
   },
   {
@@ -582,7 +587,8 @@ const CATEGORIES = [
       { main: "M"   },
       { main: "L"   },
       { main: "XL"  },
-      { main: "XXL" }
+      { main: "XXL" },
+      { main: "XXXL" }
     ]
   }
 ];
@@ -839,6 +845,8 @@ function openOverlay(size, catName) {
     ovSubGroup.classList.add('hidden');
     overlay.classList.add('single');
   }
+  // Wide letter sizes (e.g. XXXL) need a smaller font to fit
+  overlay.classList.toggle('wide4', String(size.main).length >= 4 && isNaN(parseFloat(size.main)));
 
   const intl = settings.euuk ? computeIntl(size) : '';
   if (intl) { ovIntl.textContent = intl; ovIntl.classList.remove('hidden'); }
