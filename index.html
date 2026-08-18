@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- v7: light mode + bigger fullscreen conversion -->
+<!-- v8: WIDE one-shot toggle (fullscreen banner) -->
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -75,6 +75,10 @@
   .mode-btn.on {
     background: #ff0050; color: #fff; border-color: #ff0050;
     box-shadow: 0 0 12px rgba(255,0,80,0.6);
+  }
+  .mode-btn.wide-on {
+    background: #00b0ff; color: #000; border-color: #00b0ff;
+    box-shadow: 0 0 12px rgba(0,176,255,0.6);
   }
   .mode-btn:active { transform: scale(0.96); }
 
@@ -229,6 +233,26 @@
     letter-spacing: 0.1em;
   }
   #overlay .intl.hidden { display: none; }
+
+  /* ===== WIDE banner (fullscreen only) ===== */
+  #overlay .ov-wide {
+    margin-top: 2.5vh;
+    padding: 0.8vh 4vw;
+    border-radius: 999px;
+    background: #00b0ff; color: #000;
+    font-weight: 900;
+    font-size: min(11vw, 13vh);
+    line-height: 1.05;
+    letter-spacing: 0.12em;
+    box-shadow: 0 0 24px rgba(0,176,255,0.5);
+  }
+  #overlay .ov-wide.hidden { display: none; }
+  /* Shrink the size a touch so the banner always fits */
+  #overlay.haswide .ov-main { font-size: min(24vw, 34vh); }
+  #overlay.haswide .ov-sub-num { font-size: min(19vw, 24vh); }
+  #overlay.single.haswide .ov-main { font-size: min(34vw, 44vh); }
+  #overlay.single.wide4.haswide .ov-main { font-size: min(27vw, 40vh); }
+  #overlay.single.haswide .ov-main-label { font-size: min(10vw, 12vh); }
 
   #overlay[data-cat="MEN"]      .ov-main,
   #overlay[data-cat="MEN"]      .ov-sub-num { color: #00e0ff; }
@@ -385,6 +409,9 @@
   body.light #overlay[data-cat="KIDS"]     .ov-sub-num { color: #d1009f; }
   body.light #overlay[data-cat="CLOTHING"] .ov-main,
   body.light #overlay[data-cat="CLOTHING"] .ov-sub-num { color: #7a3ff2; }
+
+  body.light .mode-btn.wide-on { background: #0077cc; color: #fff; border-color: #0077cc; }
+  body.light #overlay .ov-wide { background: #0077cc; color: #fff; box-shadow: none; }
 </style>
 </head>
 <body data-cat="MEN">
@@ -393,6 +420,7 @@
   <button class="icon-btn" id="settingsBtn" aria-label="Settings">⚙</button>
   <div id="tabs"></div>
   <button class="mode-btn" id="adidasBtn">STANDARD</button>
+  <button class="mode-btn" id="wideBtn">WIDE</button>
 </div>
 
 <div id="pinRow" class="empty"></div>
@@ -410,6 +438,7 @@
     <span class="ov-sub-num" id="ovSub"></span>
     <span class="ov-sub-label" id="ovSubLabel"></span>
   </div>
+  <div class="ov-wide hidden" id="ovWide">WIDE</div>
   <div class="intl hidden" id="ovIntl"></div>
 </div>
 
@@ -472,6 +501,7 @@
     <div class="help">
       HOW TO USE:<br>
       • TAP tile → fullscreen size<br>
+      • TAP WIDE, then a tile → screen says WIDE (turns itself off after)<br>
       • TAP star on tile → add to favorites row<br>
       • SWIPE left/right on grid → switch tabs<br>
       • In fullscreen, tap anywhere to close
@@ -673,7 +703,9 @@ const ovSub = document.getElementById('ovSub');
 const ovSubLabel = document.getElementById('ovSubLabel');
 const ovSubGroup = document.getElementById('ovSubGroup');
 const ovIntl = document.getElementById('ovIntl');
+const ovWide = document.getElementById('ovWide');
 const adidasBtn = document.getElementById('adidasBtn');
+const wideBtn = document.getElementById('wideBtn');
 const settingsBtn = document.getElementById('settingsBtn');
 const settingsPanel = document.getElementById('settingsPanel');
 const settingsBackdrop = document.getElementById('settingsBackdrop');
@@ -683,6 +715,9 @@ const rotateWarning = document.getElementById('rotateWarning');
 
 let currentCat = CATEGORIES[0];
 let currentOverlaySize = null;
+/* WIDE is a one-shot flag: arm it, show a size, it disarms itself on close.
+   Deliberately NOT saved to settings — it should never survive a reload. */
+let wideArmed = false;
 
 /* ---------- Click sound (WebAudio, synthesized) ---------- */
 let audioCtx = null;
@@ -848,6 +883,10 @@ function openOverlay(size, catName) {
   // Wide letter sizes (e.g. XXXL) need a smaller font to fit
   overlay.classList.toggle('wide4', String(size.main).length >= 4 && isNaN(parseFloat(size.main)));
 
+  // WIDE banner
+  ovWide.classList.toggle('hidden', !wideArmed);
+  overlay.classList.toggle('haswide', wideArmed);
+
   const intl = settings.euuk ? computeIntl(size) : '';
   if (intl) { ovIntl.textContent = intl; ovIntl.classList.remove('hidden'); }
   else ovIntl.classList.add('hidden');
@@ -859,6 +898,8 @@ function openOverlay(size, catName) {
 function closeOverlay() {
   overlay.classList.remove('show');
   currentOverlaySize = null;
+  // WIDE is one-shot — disarm after the size has been shown
+  if (wideArmed) { wideArmed = false; renderWide(); }
   feedback(5);
 }
 overlay.addEventListener('click', closeOverlay);
@@ -920,6 +961,16 @@ adidasBtn.addEventListener('click', () => {
   if (overlay.classList.contains('show') && currentOverlaySize) {
     openOverlay(currentOverlaySize.size, currentOverlaySize.catName);
   }
+  feedback(20);
+});
+
+/* ---------- Wide toggle (one-shot) ---------- */
+function renderWide() {
+  wideBtn.classList.toggle('wide-on', wideArmed);
+}
+wideBtn.addEventListener('click', () => {
+  wideArmed = !wideArmed;
+  renderWide();
   feedback(20);
 });
 
@@ -1041,6 +1092,7 @@ document.body.setAttribute('data-cat', currentCat.name);
 applyTheme();
 buildTabs();
 renderAdidas();
+renderWide();
 applyRotateWarn();
 if (settings.wake) applyWakeLock();
 requestAnimationFrame(() => { buildGrid(); renderPinRow(); });
